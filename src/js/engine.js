@@ -1658,7 +1658,7 @@ BitVec.prototype.ishiftor = function(mask, shift) {
   this.data[shift>>5] |= low;
   if (toshift) {
     var high = mask >> (32 - toshift);
-    this.data[(shift>>5)+1] |= high;
+    if (high) this.data[(shift>>5)+1] |= high;
   }
 }
 
@@ -1668,7 +1668,7 @@ BitVec.prototype.ishiftclear = function(mask, shift) {
   this.data[shift>>5] &= ~low;
   if (toshift){
     var high = mask >> (32 - (shift & 31));
-    this.data[(shift>>5)+1] &= ~high;
+    if (high) this.data[(shift>>5)+1] &= ~high;
   }
 }
 
