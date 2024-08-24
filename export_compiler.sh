@@ -5,6 +5,7 @@ cd `dirname "$0"`/src/js
 
 rm final.js
 cat >> final.js <<EOF
+export default (function(ogConsoleLog) {
 // Miscellaneous globals defined by puzzlescript
 let colorPalettesAliases, colorPalettes, forceRegenImages, lastDownTarget;
 let canvasResize = () => {}
@@ -16,14 +17,13 @@ let consoleCacheDump = () => {}
 let canDump = false
 let canSetHTMLColors = false
 let IDE = false
-if (typeof(window) === 'undefined') {
-    // quickjs or nodejs
-    var window = {}
-}
+let window = {}
 let canvas = {}
 window.canvas = canvas
-let ogConsoleLog = console.log
-console.log = () => {}
+let console = {
+    log: () => {}
+}
+window.console = console
 let document = {}
 let elements = {}
 document.getElementById = (id) => {
@@ -71,7 +71,7 @@ function recusiveSerialize(state) {
     return toret
 }
 
-export default function(text) {
+return function(text) {
     compile(undefined, text);
     if (document.getElementById("errormessage").innerHTML) throw Error(document.getElementById("errormessage"))
 
@@ -83,6 +83,8 @@ export default function(text) {
 
     return game
 }
+})(console.log)
 EOF
 
+echo $out
 mv final.js $out
